@@ -19,6 +19,4 @@ steps:
   - name: 'gcr.io/cloud-builders/docker'
     args: ['push', 'gcr.io/divine-cortex-322302/nestjs-monorepo']
 
-options:
-  logging: CLOUD_LOGGING_ONLY
-  logsBucket: build_logs_monorepo
+logsBucket: 'gs://build_logs_monorepo'
