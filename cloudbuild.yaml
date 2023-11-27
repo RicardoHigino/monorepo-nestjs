@@ -1,0 +1,20 @@
+steps:
+  # Etapa para baixar as dependências
+  - name: 'gcr.io/cloud-builders/npm'
+    args: ['install']
+  
+  # Etapa para execução dos testes, se houver
+  - name: 'gcr.io/cloud-builders/npm'
+    args: ['test']
+  
+  # Etapa para construir a aplicação
+  - name: 'gcr.io/cloud-builders/npm'
+    args: ['run', 'build']
+  
+  # Etapa para criar a imagem do contêiner
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', 'gcr.io/divine-cortex-322302/nestjs-monorepo', '.']
+  
+  # Etapa para enviar a imagem para o Google Container Registry (GCR)
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'gcr.io/divine-cortex-322302/nestjs-monorepo']
