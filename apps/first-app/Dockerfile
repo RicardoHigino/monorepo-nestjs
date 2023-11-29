@@ -7,7 +7,7 @@ WORKDIR /usr/src/app
 WORKDIR /app
 
 # Install app dependencies
-COPY package*.json ./
+COPY ../../package*.json ./
 
 RUN npm install
 # If you are building your code for production
