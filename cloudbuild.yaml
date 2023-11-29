@@ -1,22 +1,26 @@
 steps:
-  # Etapa para baixar as dependências
-  - name: 'gcr.io/cloud-builders/npm'
-    args: ['install']
-  
-  # Etapa para execução dos testes, se houver
-  - name: 'gcr.io/cloud-builders/npm'
-    args: ['test']
-  
-  # Etapa para construir a aplicação
-  - name: 'gcr.io/cloud-builders/npm'
-    args: ['run', 'build']
-  
-  # Etapa para criar a imagem do contêiner
-  - name: 'gcr.io/cloud-builders/docker'
-    args: ['build', '-t', 'gcr.io/divine-cortex-322302/nestjs-monorepo', '.']
-  
-  # Etapa para enviar a imagem para o Google Container Registry (GCR)
-  - name: 'gcr.io/cloud-builders/docker'
-    args: ['push', 'gcr.io/divine-cortex-322302/nestjs-monorepo']
-
-logsBucket: 'gs://build_logs_monorepo'
+  - name: gcr.io/cloud-builders/docker
+    args:
+      - build
+      - '-t'
+      - '$_AR_HOSTNAME/$PROJECT_ID/$_AR_REPO/$_SERVICE_NAME:$COMMIT_SHA'
+      - .
+  - name: gcr.io/cloud-builders/docker
+    args:
+      - push
+      - '$_AR_HOSTNAME/$PROJECT_ID/$_AR_REPO/$_SERVICE_NAME:$COMMIT_SHA'
+  - name: gcr.io/google.com/cloudsdktool/cloud-sdk
+    args:
+      - run
+      - deploy
+      - $_SERVICE_NAME
+      - '--image'
+      - '$_AR_HOSTNAME/$PROJECT_ID/$_AR_REPO/$_SERVICE_NAME:$COMMIT_SHA'
+      - '--region'
+      - $_DEPLOY_REGION
+      - '--platform'
+      - $_PLATFORM
+    entrypoint: gcloud
+timeout: 1200s
+images:
+  - '$_AR_HOSTNAME/$PROJECT_ID/$_AR_REPO/$_SERVICE_NAME:$COMMIT_SHA'
