@@ -4,7 +4,7 @@ FROM node:18
 WORKDIR /usr/src/app
 
 # Install app dependencies
-COPY ["../../package.json", "../../package-lock.json*", "./"]
+COPY ["nestjs-monorepo/package.json", "nestjs-monorepo/package-lock.json*", "nestjs-monorepo/"]
 
 RUN npm install
 # If you are building your code for production
