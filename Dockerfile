@@ -15,13 +15,10 @@ ARG SERVER_NAME
 
 EXPOSE 8080
 
-if [ "$SERVER_NAME" = "first-app" ] ; then
-    echo "Running start"
+RUN if [ "$SERVER_NAME" = "first-app" ] ; then
+    echo "Running first"
     CMD [ "npm", "run", "start"]
 elif [ "$SERVER_NAME" = "second-app" ] ; then
-    echo "Running dev"
+    echo "Running second-app"
     CMD [ "npm", "run", "start:second-app"]
-else
-    echo "Running default"
-    CMD [ "npm", "run", "start"]
-fi
+ fi
