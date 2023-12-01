@@ -11,5 +11,7 @@ RUN npm install
 # Bundle app source
 COPY . .
 
+ARG SERVER_NAME
+
 EXPOSE 8080
 CMD [ "npm", "run", "$SERVER_NAME"]
