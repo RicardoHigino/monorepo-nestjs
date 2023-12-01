@@ -4,6 +4,7 @@ steps:
       - build
       - '-t'
       - '$_AR_HOSTNAME/$PROJECT_ID/$_AR_REPO/$_SERVICE_NAME:$COMMIT_SHA'
+      - '--build-arg=SERVER_NAME=$_APP_NAME'
       - .
   - name: gcr.io/cloud-builders/docker
     args:
@@ -22,7 +23,7 @@ steps:
       - $_PLATFORM
     entrypoint: gcloud
 timeout: 1200s
-substitutions:
-  _APP_NAME: '$_APP_NAME'
+# substitutions:
+#   _SERVER_NAME: '$_APP_NAME'
 images:
   - '$_AR_HOSTNAME/$PROJECT_ID/$_AR_REPO/$_SERVICE_NAME:$COMMIT_SHA'
