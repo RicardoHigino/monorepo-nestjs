@@ -14,4 +14,14 @@ COPY . .
 ARG SERVER_NAME
 
 EXPOSE 8080
-CMD [ "npm", "run", "$SERVER_NAME"]
+
+if [ "$SERVER_NAME" = "first-app" ] ; then
+    echo "Running start"
+    CMD [ "npm", "run", "start"]
+elif [ "$SERVER_NAME" = "second-app" ] ; then
+    echo "Running dev"
+    CMD [ "npm", "run", "start:second-app"]
+else
+    echo "Running default"
+    CMD [ "npm", "run", "start"]
+fi
