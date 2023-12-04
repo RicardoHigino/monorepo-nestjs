@@ -11,7 +11,7 @@ export class AppController {
     private readonly myLibraryService: MyLibraryService,
   ) {}
 
-  @Get('first')
+  @Get('')
   getHello(): string {
     return this.appService.getHello();
   }
