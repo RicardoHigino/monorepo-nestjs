@@ -10,6 +10,9 @@ RUN npm install
 # Bundle app source
 COPY . .
 
+# Build TypeScript to JavaScript
+RUN npm run build
+
 # Copy the entrypoint script
 COPY entrypoint.sh .
 
