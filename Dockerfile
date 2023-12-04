@@ -13,6 +13,9 @@ COPY . .
 # Build TypeScript to JavaScript
 RUN npm run build
 
+# Copiar o diretório dist
+COPY dist ./dist
+
 # Copy the entrypoint script
 COPY entrypoint.sh .
 
