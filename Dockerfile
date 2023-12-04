@@ -11,8 +11,7 @@ RUN npm install
 COPY . .
 
 # Build TypeScript to JavaScript
-RUN npm run build:first-app
-RUN npm run build:second-app
+RUN npm run build:all
 
 # Copy the entrypoint script
 COPY entrypoint.sh .

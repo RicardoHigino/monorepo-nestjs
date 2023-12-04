@@ -9,8 +9,9 @@
     "node": "18.0.0"
   },
   "scripts": {
-    "build:first-app": "nest build",
-    "build:second-app": "nest build",
+    "build:all": "nest build first-app && nest build second-app", 
+    "build:first-app": "nest build first-app",
+    "build:second-app": "nest build second-app",
     "format": "prettier --write \"apps/**/*.ts\" \"libs/**/*.ts\"",
     "start": "nest start",
     "start:second-app": "nest start second-app",
