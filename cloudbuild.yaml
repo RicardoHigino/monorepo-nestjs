@@ -1,29 +1,62 @@
-steps:
-  - name: gcr.io/cloud-builders/docker
-    args:
-      - build
-      - '-t'
-      - '$_AR_HOSTNAME/$PROJECT_ID/$_AR_REPO/$_SERVICE_NAME:$COMMIT_SHA'
-      - '--build-arg=SERVER_NAME=$_APP_NAME'
-      - .
-  - name: gcr.io/cloud-builders/docker
-    args:
-      - push
-      - '$_AR_HOSTNAME/$PROJECT_ID/$_AR_REPO/$_SERVICE_NAME:$COMMIT_SHA'
-  - name: gcr.io/google.com/cloudsdktool/cloud-sdk
-    args:
-      - run
-      - deploy
-      - $_SERVICE_NAME
-      - '--image'
-      - '$_AR_HOSTNAME/$PROJECT_ID/$_AR_REPO/$_SERVICE_NAME:$COMMIT_SHA'
-      - '--region'
-      - $_DEPLOY_REGION
-      - '--platform'
-      - $_PLATFORM
-    entrypoint: gcloud
+# Arquivo cloudbuild.yaml
 timeout: 1200s
-substitutions:
-  _APP_NAME: 'first-app'
 images:
-  - '$_AR_HOSTNAME/$PROJECT_ID/$_AR_REPO/$_SERVICE_NAME:$COMMIT_SHA'
+  - '$_AR_HOSTNAME/$PROJECT_ID/$_AR_REPO/$_REPO_NAME:$COMMIT_SHA'
+
+steps:
+  # Etapa 1: Construção da Imagem do Container
+  # Constrói a imagem Docker a partir do Dockerfile e define a tag com o SHA do commit
+  - name: 'gcr.io/cloud-builders/docker'
+    id: 'build-app'
+    args: 
+      - 'build'
+      - '-t'
+      - '$_AR_HOSTNAME/$PROJECT_ID/$_AR_REPO/$_REPO_NAME:$COMMIT_SHA'
+      - '.'
+
+  # Etapa 2: Envio da Imagem para o Artifact Registry
+  # Envia a imagem construída para o Google Artifact Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    id: 'push-app'
+    args: 
+      - 'push'
+      - '$_AR_HOSTNAME/$PROJECT_ID/$_AR_REPO/$_REPO_NAME:$COMMIT_SHA'
+
+  # Etapa 3: Implantação no Cloud Run
+  # A implantação é dividida em duas subetapas, uma para cada aplicativo
+
+  # Subetapa 3.1: Implantação do First-App
+  # Implanta a imagem no Cloud Run como o serviço 'first-app'
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    id: 'deploy-first-app'
+    entrypoint: 'gcloud'
+    args: 
+      - 'run'
+      - 'deploy'
+      - 'first-app'
+      - '--image'
+      - '$_AR_HOSTNAME/$PROJECT_ID/$_AR_REPO/$_REPO_NAME:$COMMIT_SHA'
+      - '--region'
+      - '$_DEPLOY_REGION'
+      - '--platform'
+      - 'managed'
+      - '--set-env-vars'
+      - 'SERVER_NAME=first-app'
+
+  # Subetapa 3.2: Implantação do Second-App
+  # Implanta a mesma imagem no Cloud Run como o serviço 'second-app', mas com uma variável de ambiente diferente
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    id: 'deploy-second-app'
+    entrypoint: 'gcloud'
+    args: 
+      - 'run'
+      - 'deploy'
+      - 'second-app'
+      - '--image'
+      - '$_AR_HOSTNAME/$PROJECT_ID/$_AR_REPO/$_REPO_NAME:$COMMIT_SHA'
+      - '--region'
+      - '$_DEPLOY_REGION'
+      - '--platform'
+      - 'managed'
+      - '--set-env-vars'
+      - 'SERVER_NAME=second-app'
